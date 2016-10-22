@@ -1,6 +1,6 @@
 {
   "name": "rehype-format",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Format HTML with rehype",
   "license": "MIT",
   "keywords": [
