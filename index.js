@@ -16,7 +16,7 @@ var single = '\n';
 var re = /\n/g;
 
 /* Format white-space. */
-function format(processor, options) {
+function format(options) {
   var settings = options || {};
   var indent = settings.indent || 2;
   var indentInitial = settings.indentInitial;
