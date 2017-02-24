@@ -1,7 +1,7 @@
 'use strict';
 
 /* Dependencies. */
-var minify = require('rehype-minify-whitespace')(null, {newlines: true});
+var minify = require('rehype-minify-whitespace')({newlines: true});
 var phrasing = require('hast-util-phrasing');
 var sensitive = require('html-whitespace-sensitive-tag-names');
 var repeat = require('repeat-string');
