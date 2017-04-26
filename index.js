@@ -72,8 +72,10 @@ function format(options) {
         }
       }
 
-      node.children = result = [];
+      result = [];
       index = -1;
+
+      node.children = result;
 
       while (++index < length) {
         child = children[index];
