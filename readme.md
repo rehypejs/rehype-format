@@ -94,6 +94,11 @@ not indenting `head` and `body`).
 line (`\n\n`).  For example, when `['head', 'body']` is given, a blank line
 is added between these two.
 
+## Related
+
+*   [`rehype-minify`](https://github.com/wooorm/rehype-minify)
+    — Minify HTML
+
 ## License
 
 [MIT][license] © [Titus Wormer][author]
