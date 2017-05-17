@@ -64,29 +64,35 @@ index.html: no issues found
 
 Format white-space in the processed tree.
 
-*   Collapse all white-space (to a single space or newline);
-*   Remove unneeded white-space;
-*   Inject needed newlines and indentation;
-*   Indent previously collapsed newlines properly.
+*   Collapse all white-space (to a single space or newline)
+*   Remove unneeded white-space
+*   Inject needed newlines and indentation
+*   Indent previously collapsed newlines properly
 
 All superfluous white-space is removed.  However, as newlines
 are kept (and later properly indented), your code will still
 line-wrap as expected.
 
-###### `options`
+##### `options`
 
-*   `indent` (`number`, `string`, default: `2`)
-    — Indentation per level.  When number, uses that amount
-    of spaces.  When `string`, uses that per indentation
-    level.
-*   `indentInitial` (`boolean`, default: `true`)
-    — Whether to indent the first level (usually, in the
-    `html` element, thus not indenting `head` and `body`).
-*   `blanks` (`Array.<string>`, default: `[]`)
-    — List of tag-names, which, when next to each other,
-    are joined by a blank line (`\n\n`).  For example,
-    when `['head', 'body']` is given, a blank line is added
-    between these two.
+###### `options.indent`
+
+`number`, `string`, default: `2`
+— Indentation per level.  When number, uses that amount of spaces.  When
+`string`, uses that per indentation level.
+
+###### `options.indentInitial`
+
+`boolean`, default: `true`
+— Whether to indent the first level (usually, in the `html` element, thus
+not indenting `head` and `body`).
+
+###### `options.blanks`
+
+`Array.<string>`, default: `[]`
+— List of tag-names, which, when next to each other, are joined by a blank
+line (`\n\n`).  For example, when `['head', 'body']` is given, a blank line
+is added between these two.
 
 ## License
 
