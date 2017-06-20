@@ -33,6 +33,7 @@ function format(options) {
 
   function transform(tree) {
     var root = minify(tree);
+    var head = false;
 
     visit(root, visitor);
 
@@ -48,8 +49,16 @@ function format(options) {
       var child;
       var newline;
 
+      if (node.type === 'element' && node.tagName === 'head') {
+        head = true;
+      }
+
+      if (head && node.type === 'element' && node.tagName === 'body') {
+        head = false;
+      }
+
       /* Don’t indent content of whitespace-sensitive nodes / inlines. */
-      if (!length || !padding(node) || ignore(parents.concat(node))) {
+      if (!length || !padding(node, head) || ignore(parents.concat(node))) {
         return;
       }
 
@@ -78,7 +87,7 @@ function format(options) {
       while (++index < length) {
         child = children[index];
 
-        if (padding(child) || (newline && index === 0)) {
+        if (padding(child, head) || (newline && index === 0)) {
           result.push({
             type: 'text',
             value: ((prev && blank(prev) && blank(child)) ? double : single) +
@@ -90,7 +99,7 @@ function format(options) {
         result.push(child);
       }
 
-      if (newline || padding(prev)) {
+      if (newline || padding(prev, head)) {
         result.push({
           type: 'text',
           value: single + repeat(indent, level - 1)
@@ -106,13 +115,13 @@ function format(options) {
   }
 }
 
-function padding(node) {
+function padding(node, head) {
   if (node.type === 'root') {
     return true;
   }
 
   if (node.type === 'element') {
-    return node.tagName === 'script' || !phrasing(node);
+    return node.tagName === 'script' || !phrasing(node) || head;
   }
 
   return false;
