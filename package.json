@@ -10,8 +10,8 @@
     "fmt",
     "html"
   ],
-  "repository": "https://github.com/wooorm/rehype-format",
-  "bugs": "https://github.com/wooorm/rehype-format/issues",
+  "repository": "rehypejs/rehype-format",
+  "bugs": "https://github.com/rehypejs/rehype-format/issues",
   "author": "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)",
   "contributors": [
     "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)"
@@ -64,6 +64,8 @@
     ]
   },
   "remarkConfig": {
-    "plugins": ["preset-wooorm"]
+    "plugins": [
+      "preset-wooorm"
+    ]
   }
 }

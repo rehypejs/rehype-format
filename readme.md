@@ -96,7 +96,7 @@ is added between these two.
 
 ## Related
 
-*   [`rehype-minify`](https://github.com/wooorm/rehype-minify)
+*   [`rehype-minify`](https://github.com/rehypejs/rehype-minify)
     — Minify HTML
 
 ## License
@@ -105,13 +105,13 @@ is added between these two.
 
 <!-- Definitions -->
 
-[travis-badge]: https://img.shields.io/travis/wooorm/rehype-format.svg
+[travis-badge]: https://img.shields.io/travis/rehypejs/rehype-format.svg
 
-[travis]: https://travis-ci.org/wooorm/rehype-format
+[travis]: https://travis-ci.org/rehypejs/rehype-format
 
-[codecov-badge]: https://img.shields.io/codecov/c/github/wooorm/rehype-format.svg
+[codecov-badge]: https://img.shields.io/codecov/c/github/rehypejs/rehype-format.svg
 
-[codecov]: https://codecov.io/github/wooorm/rehype-format
+[codecov]: https://codecov.io/github/rehypejs/rehype-format
 
 [npm]: https://docs.npmjs.com/cli/install
 
@@ -119,4 +119,4 @@ is added between these two.
 
 [author]: http://wooorm.com
 
-[rehype]: https://github.com/wooorm/rehype
+[rehype]: https://github.com/rehypejs/rehype
