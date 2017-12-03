@@ -99,6 +99,13 @@ is added between these two.
 *   [`rehype-minify`](https://github.com/rehypejs/rehype-minify)
     — Minify HTML
 
+## Contribute
+
+See [`contribute.md` in `rehypejs/rehype`][contribute] for ways to get started.
+
+This organisation has a [Code of Conduct][coc].  By interacting with this
+repository, organisation, or community you agree to abide by its terms.
+
 ## License
 
 [MIT][license] © [Titus Wormer][author]
@@ -120,3 +127,7 @@ is added between these two.
 [author]: http://wooorm.com
 
 [rehype]: https://github.com/rehypejs/rehype
+
+[contribute]: https://github.com/rehypejs/rehype/blob/master/contributing.md
+
+[coc]: https://github.com/rehypejs/rehype/blob/master/code-of-conduct.md
