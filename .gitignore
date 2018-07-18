@@ -5,3 +5,4 @@ coverage/
 node_modules/
 rehype-format.js
 rehype-format.min.js
+yarn.lock
