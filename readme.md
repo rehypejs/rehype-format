@@ -44,7 +44,7 @@ Now, running `node example` yields:
 
 ```html
 index.html: no issues found
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <title>Hello!</title>
