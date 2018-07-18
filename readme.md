@@ -101,7 +101,8 @@ is added between these two.
 
 ## Contribute
 
-See [`contribute.md` in `rehypejs/rehype`][contribute] for ways to get started.
+See [`contributing.md` in `rehypejs/rehype`][contribute] for ways to get
+started.
 
 This organisation has a [Code of Conduct][coc].  By interacting with this
 repository, organisation, or community you agree to abide by its terms.
