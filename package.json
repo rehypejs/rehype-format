@@ -20,6 +20,7 @@
     "index.js"
   ],
   "dependencies": {
+    "hast-util-embedded": "^1.0.1",
     "hast-util-phrasing": "^1.0.0",
     "html-whitespace-sensitive-tag-names": "^1.0.0",
     "rehype-minify-whitespace": "^2.0.0",

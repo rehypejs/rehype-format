@@ -2,6 +2,7 @@
 
 var minify = require('rehype-minify-whitespace')({newlines: true})
 var phrasing = require('hast-util-phrasing')
+var embedded = require('hast-util-embedded')
 var sensitive = require('html-whitespace-sensitive-tag-names')
 var repeat = require('repeat-string')
 var visit = require('unist-util-visit-parents')
@@ -124,7 +125,9 @@ function padding(node, head) {
   }
 
   if (node.type === 'element') {
-    return node.tagName === 'script' || !phrasing(node) || head
+    return (
+      head || node.tagName === 'script' || embedded(node) || !phrasing(node)
+    )
   }
 
   return false
