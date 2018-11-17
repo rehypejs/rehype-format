@@ -1,4 +1,9 @@
-# rehype-format [![Build Status][travis-badge]][travis] [![Coverage Status][codecov-badge]][codecov]
+# rehype-format
+
+[![Build][build-badge]][build]
+[![Coverage][coverage-badge]][coverage]
+[![Downloads][downloads-badge]][downloads]
+[![Chat][chat-badge]][chat]
 
 Format HTML with [**rehype**][rehype].
 
@@ -113,13 +118,21 @@ repository, organisation, or community you agree to abide by its terms.
 
 <!-- Definitions -->
 
-[travis-badge]: https://img.shields.io/travis/rehypejs/rehype-format.svg
+[build-badge]: https://img.shields.io/travis/rehypejs/rehype-format.svg
 
-[travis]: https://travis-ci.org/rehypejs/rehype-format
+[build]: https://travis-ci.org/rehypejs/rehype-format
 
-[codecov-badge]: https://img.shields.io/codecov/c/github/rehypejs/rehype-format.svg
+[coverage-badge]: https://img.shields.io/codecov/c/github/rehypejs/rehype-format.svg
 
-[codecov]: https://codecov.io/github/rehypejs/rehype-format
+[coverage]: https://codecov.io/github/rehypejs/rehype-format
+
+[downloads-badge]: https://img.shields.io/npm/dm/rehype-format.svg
+
+[downloads]: https://www.npmjs.com/package/rehype-format
+
+[chat-badge]: https://img.shields.io/badge/join%20the%20community-on%20spectrum-7b16ff.svg
+
+[chat]: https://spectrum.chat/unified/rehype
 
 [npm]: https://docs.npmjs.com/cli/install
 
