@@ -9,12 +9,10 @@ var visit = require('unist-util-visit-parents')
 
 module.exports = format
 
-/* Constants. */
 var double = '\n\n'
 var single = '\n'
 var re = /\n/g
 
-/* Format white-space. */
 function format(options) {
   var settings = options || {}
   var indent = settings.indent || 2
@@ -25,7 +23,7 @@ function format(options) {
     indent = repeat(' ', indent)
   }
 
-  /* Default to indenting the initial level. */
+  // Default to indenting the initial level.
   if (indentInitial === null || indentInitial === undefined) {
     indentInitial = true
   }
@@ -58,7 +56,7 @@ function format(options) {
         head = false
       }
 
-      /* Don’t indent content of whitespace-sensitive nodes / inlines. */
+      // Don’t indent content of whitespace-sensitive nodes / inlines.
       if (!length || !padding(node, head) || ignore(parents.concat(node))) {
         return
       }
@@ -67,7 +65,7 @@ function format(options) {
         level--
       }
 
-      /* Indent newlines in `text`. */
+      // Indent newlines in `text`.
       while (++index < length) {
         child = children[index]
 

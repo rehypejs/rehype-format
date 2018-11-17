@@ -34,15 +34,17 @@ Say we have the following file, `index.html`:
 And our script, `example.js`, looks as follows:
 
 ```javascript
-var vfile = require('to-vfile');
-var report = require('vfile-reporter');
-var rehype = require('rehype');
-var format = require('rehype-format');
+var vfile = require('to-vfile')
+var report = require('vfile-reporter')
+var rehype = require('rehype')
+var format = require('rehype-format')
 
-rehype().use(format).process(vfile.readSync('index.html'), function (err, file) {
-  console.error(report(err || file));
-  console.log(String(file));
-});
+rehype()
+  .use(format)
+  .process(vfile.readSync('index.html'), function(err, file) {
+    console.error(report(err || file))
+    console.log(String(file))
+  })
 ```
 
 Now, running `node example` yields:
