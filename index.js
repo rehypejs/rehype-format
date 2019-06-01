@@ -38,6 +38,7 @@ function format(options) {
 
     return root
 
+    // eslint-disable-next-line complexity
     function visitor(node, parents) {
       var children = node.children || []
       var length = children.length

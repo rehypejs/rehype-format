@@ -68,9 +68,6 @@
   "xo": {
     "prettier": true,
     "esnext": false,
-    "rules": {
-      "complexity": "off"
-    },
     "ignores": [
       "rehype-format.js"
     ]
