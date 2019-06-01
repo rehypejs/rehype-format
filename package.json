@@ -1,9 +1,10 @@
 {
   "name": "rehype-format",
   "version": "2.3.1",
-  "description": "Format HTML with rehype",
+  "description": "rehype plugin to format HTML",
   "license": "MIT",
   "keywords": [
+    "unified",
     "rehype",
     "plugin",
     "format",
