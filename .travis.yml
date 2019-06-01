@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-- lts/boron
-- node
+  - lts/dubnium
+  - node
 after_script: bash <(curl -s https://codecov.io/bash)
 deploy:
   provider: releases
@@ -9,7 +9,7 @@ deploy:
   api_key:
     secure: ODfjX7t8msHwY/NraI/Xu7ziWk45snqFIdeqm+fBjHa8ee2q/y4Qd8CAH5Q/HtdoZ2CK7OZnJet8G1fJaGBDiX7auGCrfK9CPZrdWDwzzLHIuzQVRPDSNRjUkSsygMpY82cBPWmJ9rLFkOlT8W7VgDGk1dSV1T/Q7hHz/Rw+VkHbiwB70kqQyr0sMBOj/X8f81wDGhajXAmNjaftUDne6g3FgMDc/O0yix5syfUiRUF+JgxuhqGy5+sttIsipxwszS483O/nbDN1ev3bEE3NGbdqov4dQhZu2AQ6hSPcWw3H3+BucD2xSqFXxzqUHzEN978uginGNw/dryQ66Oy5N0lv2Bmoz6FNi3ZsuPTBE6VeWQ/cBIQI4yeAhNTl1EZszixzN7gc8yUTv+exfPEirs2GK6NzV4pFHTg0CFyyq7fyuyOUiDyMu+ZewqB7SUFQ6KzREWChPc7glaSe31Z/rvBxsFvtvSWIdTJZ8odLUnIt7C33w2yXTA7I/XmxPBC+X7uQ2r1K6DyUMFkv1J2fwZJ1YlKnyxOQBH0xye+PQ+u+RUPgVWntxiCY/p1vsK0xFT9ECJ8hQKS1xF8LKqkrtiKZzNKfus3R4zRFxI42LZUa431vhspDjqxUuEFkyyFxdNiOToMwB3EhBveNazso5hpmR74A0zx9pp4eBJS6WZw=
   file:
-    - "rehype-format.js"
-    - "rehype-format.min.js"
+    - 'rehype-format.js'
+    - 'rehype-format.min.js'
   on:
     tags: true
