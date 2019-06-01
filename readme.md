@@ -3,19 +3,22 @@
 [![Build][build-badge]][build]
 [![Coverage][coverage-badge]][coverage]
 [![Downloads][downloads-badge]][downloads]
+[![Size][size-badge]][size]
+[![Sponsors][sponsors-badge]][collective]
+[![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-Format HTML with [**rehype**][rehype].
+[**rehype**][rehype] plugin to format HTML.
 
-## Installation
+## Install
 
 [npm][]:
 
-```bash
+```sh
 npm install rehype-format
 ```
 
-## Usage
+## Use
 
 Say we have the following file, `index.html`:
 
@@ -33,7 +36,7 @@ Say we have the following file, `index.html`:
 
 And our script, `example.js`, looks as follows:
 
-```javascript
+```js
 var vfile = require('to-vfile')
 var report = require('vfile-reporter')
 var rehype = require('rehype')
@@ -76,30 +79,29 @@ Format white-space in the processed tree.
 *   Inject needed newlines and indentation
 *   Indent previously collapsed newlines properly
 
-All superfluous white-space is removed.  However, as newlines
-are kept (and later properly indented), your code will still
-line-wrap as expected.
+All superfluous white-space is removed.
+However, as newlines are kept (and later properly indented), your code will
+still line-wrap as expected.
 
 ##### `options`
 
 ###### `options.indent`
 
-`number`, `string`, default: `2`
-— Indentation per level.  When number, uses that amount of spaces.  When
-`string`, uses that per indentation level.
+Indentation per level (`number`, `string`, default: `2`).
+When number, uses that amount of spaces.
+When `string`, uses that per indentation level.
 
 ###### `options.indentInitial`
 
-`boolean`, default: `true`
-— Whether to indent the first level (usually, in the `html` element, thus
-not indenting `head` and `body`).
+Whether to indent the first level (`boolean`, default: `true`).
+This is usually the `<html>`, thus not indenting `head` and `body`.
 
 ###### `options.blanks`
 
-`Array.<string>`, default: `[]`
-— List of tag-names, which, when next to each other, are joined by a blank
-line (`\n\n`).  For example, when `['head', 'body']` is given, a blank line
-is added between these two.
+List of tag names to join with a blank line (`Array.<string>`, default: `[]`).
+These tags, when next to each other, are joined by a blank line (`\n\n`).
+For example, when `['head', 'body']` is given, a blank line is added between
+these two.
 
 ## Related
 
@@ -108,11 +110,13 @@ is added between these two.
 
 ## Contribute
 
-See [`contributing.md` in `rehypejs/rehype`][contribute] for ways to get
-started.
+See [`contributing.md`][contributing] in [`rehypejs/.github`][health] for ways
+to get started.
+See [`support.md`][support] for ways to get help.
 
-This organisation has a [Code of Conduct][coc].  By interacting with this
-repository, organisation, or community you agree to abide by its terms.
+This project has a [Code of Conduct][coc].
+By interacting with this repository, organisation, or community you agree to
+abide by its terms.
 
 ## License
 
@@ -132,18 +136,32 @@ repository, organisation, or community you agree to abide by its terms.
 
 [downloads]: https://www.npmjs.com/package/rehype-format
 
+[size-badge]: https://img.shields.io/bundlephobia/minzip/rehype-format.svg
+
+[size]: https://bundlephobia.com/result?p=rehype-format
+
+[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
+
+[backers-badge]: https://opencollective.com/unified/backers/badge.svg
+
+[collective]: https://opencollective.com/unified
+
 [chat-badge]: https://img.shields.io/badge/join%20the%20community-on%20spectrum-7b16ff.svg
 
 [chat]: https://spectrum.chat/unified/rehype
 
 [npm]: https://docs.npmjs.com/cli/install
 
+[health]: https://github.com/rehypejs/.github
+
+[contributing]: https://github.com/rehypejs/.github/blob/master/contributing.md
+
+[support]: https://github.com/rehypejs/.github/blob/master/support.md
+
+[coc]: https://github.com/rehypejs/.github/blob/master/code-of-conduct.md
+
 [license]: license
 
 [author]: https://wooorm.com
 
 [rehype]: https://github.com/rehypejs/rehype
-
-[contribute]: https://github.com/rehypejs/rehype/blob/master/contributing.md
-
-[coc]: https://github.com/rehypejs/rehype/blob/master/code-of-conduct.md
