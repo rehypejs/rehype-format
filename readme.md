@@ -52,8 +52,11 @@ rehype()
 
 Now, running `node example` yields:
 
-```html
+```txt
 index.html: no issues found
+```
+
+```html
 <!doctype html>
 <html>
   <head>
@@ -72,14 +75,14 @@ index.html: no issues found
 
 ### `rehype().use(format[, options])`
 
-Format white-space in the processed tree.
+Format white space in the processed tree.
 
-*   Collapse all white-space (to a single space or newline)
-*   Remove unneeded white-space
+*   Collapse all white space (to a single space or newline)
+*   Remove unneeded white space
 *   Inject needed newlines and indentation
 *   Indent previously collapsed newlines properly
 
-All superfluous white-space is removed.
+All superfluous white space is removed.
 However, as newlines are kept (and later properly indented), your code will
 still line-wrap as expected.
 
@@ -103,10 +106,26 @@ These tags, when next to each other, are joined by a blank line (`\n\n`).
 For example, when `['head', 'body']` is given, a blank line is added between
 these two.
 
+## Security
+
+Use of `rehype-format` changes white space in the syntax tree.
+White space in `<script>`, `<style>`, `<pre>`, or `<textarea>` is not modified.
+If the tree is already safe, use of this plugin does not open you up for a
+[cross-site scripting (XSS)][xss] attack.
+When in doubt, use [`rehype-sanitize`][sanitize].
+
 ## Related
 
 *   [`rehype-minify`](https://github.com/rehypejs/rehype-minify)
     — Minify HTML
+*   [`rehype-document`](https://github.com/rehypejs/rehype-document)
+    — Wrap a document around a fragment
+*   [`rehype-sanitize`](https://github.com/rehypejs/rehype-sanitize)
+    — Sanitize HTML
+*   [`rehype-toc`](https://github.com/JS-DevTools/rehype-toc)
+    — Add a table of contents (TOC)
+*   [`rehype-section`](https://github.com/agentofuser/rehype-section)
+    — Wrap headings and their contents in sections
 
 ## Contribute
 
@@ -165,3 +184,7 @@ abide by its terms.
 [author]: https://wooorm.com
 
 [rehype]: https://github.com/rehypejs/rehype
+
+[xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
+
+[sanitize]: https://github.com/rehypejs/rehype-sanitize
