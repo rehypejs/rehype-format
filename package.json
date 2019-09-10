@@ -24,9 +24,9 @@
     "hast-util-embedded": "^1.0.1",
     "hast-util-phrasing": "^1.0.0",
     "html-whitespace-sensitive-tag-names": "^1.0.0",
-    "rehype-minify-whitespace": "^2.0.0",
+    "rehype-minify-whitespace": "^3.0.0",
     "repeat-string": "^1.5.4",
-    "unist-util-visit-parents": "^2.0.0"
+    "unist-util-visit-parents": "^3.0.0"
   },
   "devDependencies": {
     "bail": "^1.0.1",
