@@ -6,9 +6,12 @@
   "keywords": [
     "unified",
     "rehype",
+    "rehype-plugin",
     "plugin",
     "format",
     "fmt",
+    "beautify",
+    "prettify",
     "html"
   ],
   "repository": "rehypejs/rehype-format",
