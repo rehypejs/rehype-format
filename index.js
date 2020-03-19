@@ -45,7 +45,7 @@ function format(options) {
       var level = parents.length
       var index = -1
       var result
-      var prev
+      var previous
       var child
       var newline
 
@@ -91,16 +91,16 @@ function format(options) {
           result.push({
             type: 'text',
             value:
-              (prev && blank(prev) && blank(child) ? double : single) +
+              (previous && blank(previous) && blank(child) ? double : single) +
               repeat(indent, level)
           })
         }
 
-        prev = child
+        previous = child
         result.push(child)
       }
 
-      if (newline || padding(prev, head)) {
+      if (newline || padding(previous, head)) {
         result.push({
           type: 'text',
           value: single + repeat(indent, level - 1)
