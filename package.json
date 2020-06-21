@@ -1,6 +1,6 @@
 {
   "name": "rehype-format",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "rehype plugin to format HTML",
   "license": "MIT",
   "keywords": [
