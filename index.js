@@ -1,17 +1,20 @@
 'use strict'
 
 var minify = require('rehype-minify-whitespace')({newlines: true})
-var phrasing = require('hast-util-phrasing')
+var visit = require('unist-util-visit-parents')
 var embedded = require('hast-util-embedded')
+var phrasing = require('hast-util-phrasing')
+var whitespace = require('hast-util-whitespace')
+var is = require('hast-util-is-element')
 var sensitive = require('html-whitespace-sensitive-tag-names')
 var repeat = require('repeat-string')
-var visit = require('unist-util-visit-parents')
 
 module.exports = format
 
 var double = '\n\n'
 var single = '\n'
-var re = /\n/g
+var space = ' '
+var re = / *\n/g
 
 function format(options) {
   var settings = options || {}
@@ -20,7 +23,7 @@ function format(options) {
   var blanks = settings.blanks || []
 
   if (typeof indent === 'number') {
-    indent = repeat(' ', indent)
+    indent = repeat(space, indent)
   }
 
   // Default to indenting the initial level.
@@ -31,14 +34,12 @@ function format(options) {
   return transform
 
   function transform(tree) {
-    var root = minify(tree)
     var head = false
 
-    visit(root, visitor)
+    minify(tree)
 
-    return root
+    visit(tree, visitor)
 
-    // eslint-disable-next-line complexity
     function visitor(node, parents) {
       var children = node.children || []
       var length = children.length
@@ -49,16 +50,20 @@ function format(options) {
       var child
       var newline
 
-      if (node.type === 'element' && node.tagName === 'head') {
+      if (is(node, 'head')) {
         head = true
       }
 
-      if (head && node.type === 'element' && node.tagName === 'body') {
+      if (head && is(node, 'body')) {
         head = false
       }
 
+      if (is(node, sensitive)) {
+        return visit.SKIP
+      }
+
       // Don’t indent content of whitespace-sensitive nodes / inlines.
-      if (!length || !padding(node, head) || ignore(parents.concat(node))) {
+      if (!length || !padding(node, head)) {
         return
       }
 
@@ -82,18 +87,12 @@ function format(options) {
       result = []
       index = -1
 
-      node.children = result
-
       while (++index < length) {
         child = children[index]
 
         if (padding(child, head) || (newline && index === 0)) {
-          result.push({
-            type: 'text',
-            value:
-              (previous && blank(previous) && blank(child) ? double : single) +
-              repeat(indent, level)
-          })
+          addBreak(result, level, child)
+          newline = true
         }
 
         previous = child
@@ -101,20 +100,45 @@ function format(options) {
       }
 
       if (newline || padding(previous, head)) {
-        result.push({
-          type: 'text',
-          value: single + repeat(indent, level - 1)
-        })
+        // Ignore trailing whitespace (if that already existed), as we’ll add
+        // properly indented whitespace.
+        if (whitespace(previous)) {
+          result.pop()
+          previous = result[result.length - 1]
+        }
+
+        addBreak(result, level - 1)
+        newline = true
       }
+
+      node.children = result
     }
   }
 
   function blank(node) {
     return (
+      node &&
       node.type === 'element' &&
       blanks.length !== 0 &&
       blanks.indexOf(node.tagName) !== -1
     )
+  }
+
+  function addBreak(list, level, next) {
+    var tail = list[list.length - 1]
+    var previous = whitespace(tail) ? list[list.length - 2] : tail
+    var replace =
+      (blank(previous) && blank(next) ? double : single) + repeat(indent, level)
+
+    if (tail && tail.type === 'text') {
+      if (whitespace(tail)) {
+        tail.value = replace
+      } else {
+        tail.value += replace
+      }
+    } else {
+      list.push({type: 'text', value: replace})
+    }
   }
 }
 
@@ -124,21 +148,7 @@ function padding(node, head) {
   }
 
   if (node.type === 'element') {
-    return (
-      head || node.tagName === 'script' || embedded(node) || !phrasing(node)
-    )
-  }
-
-  return false
-}
-
-function ignore(nodes) {
-  var index = nodes.length
-
-  while (index--) {
-    if (sensitive.indexOf(nodes[index].tagName) !== -1) {
-      return true
-    }
+    return head || is(node, 'script') || embedded(node) || !phrasing(node)
   }
 
   return false

@@ -44,7 +44,7 @@ var format = require('rehype-format')
 
 rehype()
   .use(format)
-  .process(vfile.readSync('index.html'), function(err, file) {
+  .process(vfile.readSync('index.html'), function (err, file) {
     console.error(report(err || file))
     console.log(String(file))
   })

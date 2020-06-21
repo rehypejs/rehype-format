@@ -10,10 +10,10 @@ var negate = require('negate')
 var hidden = require('is-hidden')
 var fmt = require('..')
 
-test('format', function(t) {
+test('format', function (t) {
   var root = path.join(__dirname, 'fixtures')
 
-  fs.readdir(root, function(err, files) {
+  fs.readdir(root, function (err, files) {
     bail(err)
     files = files.filter(negate(hidden))
     t.plan(files.length)
@@ -34,12 +34,12 @@ test('format', function(t) {
 
     proc = rehype().use(fmt, config)
 
-    proc.process(input, function(err) {
-      t.test(fixture, function(st) {
-        st.plan(3)
-        st.ifErr(err, 'shouldn’t throw')
-        st.equal(input.messages.length, 0, 'shouldn’t warn')
-        st.equal(String(input), String(output), 'should match')
+    proc.process(input, function (err) {
+      t.test(fixture, function (t) {
+        t.plan(3)
+        t.ifErr(err, 'shouldn’t throw')
+        t.equal(input.messages.length, 0, 'shouldn’t warn')
+        t.equal(String(input), String(output), 'should match')
       })
     })
   }
