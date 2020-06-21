@@ -75,7 +75,7 @@ function format(options) {
       while (++index < length) {
         child = children[index]
 
-        if (child.type === 'text') {
+        if (child.type === 'text' || child.type === 'comment') {
           if (child.value.indexOf('\n') !== -1) {
             newline = true
           }
