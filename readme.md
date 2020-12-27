@@ -143,9 +143,9 @@ abide by its terms.
 
 <!-- Definitions -->
 
-[build-badge]: https://img.shields.io/travis/rehypejs/rehype-format.svg
+[build-badge]: https://github.com/rehypejs/rehype-format/workflows/main/badge.svg
 
-[build]: https://travis-ci.org/rehypejs/rehype-format
+[build]: https://github.com/rehypejs/rehype-format/actions
 
 [coverage-badge]: https://img.shields.io/codecov/c/github/rehypejs/rehype-format.svg
 
