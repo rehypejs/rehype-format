@@ -11,19 +11,13 @@ var repeat = require('repeat-string')
 
 module.exports = format
 
-var double = '\n\n'
-var single = '\n'
-var space = ' '
-var re = / *\n/g
-
 function format(options) {
   var settings = options || {}
   var indent = settings.indent || 2
   var indentInitial = settings.indentInitial
-  var blanks = settings.blanks || []
 
   if (typeof indent === 'number') {
-    indent = repeat(space, indent)
+    indent = repeat(' ', indent)
   }
 
   // Default to indenting the initial level.
@@ -34,7 +28,7 @@ function format(options) {
   return transform
 
   function transform(tree) {
-    var head = false
+    var head
 
     minify(tree)
 
@@ -42,20 +36,19 @@ function format(options) {
 
     function visitor(node, parents) {
       var children = node.children || []
-      var length = children.length
       var level = parents.length
       var index = -1
       var result
       var previous
       var child
-      var newline
+      var eol
 
       if (is(node, 'head')) {
         head = true
       }
 
       if (head && is(node, 'body')) {
-        head = false
+        head = null
       }
 
       if (is(node, sensitive)) {
@@ -63,7 +56,7 @@ function format(options) {
       }
 
       // Don’t indent content of whitespace-sensitive nodes / inlines.
-      if (!length || !padding(node, head)) {
+      if (!children.length || !padding(node, head)) {
         return
       }
 
@@ -72,34 +65,37 @@ function format(options) {
       }
 
       // Indent newlines in `text`.
-      while (++index < length) {
+      while (++index < children.length) {
         child = children[index]
 
         if (child.type === 'text' || child.type === 'comment') {
           if (child.value.indexOf('\n') !== -1) {
-            newline = true
+            eol = true
           }
 
-          child.value = child.value.replace(re, '$&' + repeat(indent, level))
+          child.value = child.value.replace(
+            / *\n/g,
+            '$&' + repeat(indent, level)
+          )
         }
       }
 
       result = []
       index = -1
 
-      while (++index < length) {
+      while (++index < children.length) {
         child = children[index]
 
-        if (padding(child, head) || (newline && index === 0)) {
+        if (padding(child, head) || (eol && !index)) {
           addBreak(result, level, child)
-          newline = true
+          eol = true
         }
 
         previous = child
         result.push(child)
       }
 
-      if (newline || padding(previous, head)) {
+      if (eol || padding(previous, head)) {
         // Ignore trailing whitespace (if that already existed), as we’ll add
         // properly indented whitespace.
         if (whitespace(previous)) {
@@ -108,7 +104,6 @@ function format(options) {
         }
 
         addBreak(result, level - 1)
-        newline = true
       }
 
       node.children = result
@@ -119,8 +114,9 @@ function format(options) {
     return (
       node &&
       node.type === 'element' &&
-      blanks.length !== 0 &&
-      blanks.indexOf(node.tagName) !== -1
+      settings.blanks &&
+      settings.blanks.length &&
+      settings.blanks.indexOf(node.tagName) > -1
     )
   }
 
@@ -128,14 +124,10 @@ function format(options) {
     var tail = list[list.length - 1]
     var previous = whitespace(tail) ? list[list.length - 2] : tail
     var replace =
-      (blank(previous) && blank(next) ? double : single) + repeat(indent, level)
+      (blank(previous) && blank(next) ? '\n\n' : '\n') + repeat(indent, level)
 
     if (tail && tail.type === 'text') {
-      if (whitespace(tail)) {
-        tail.value = replace
-      } else {
-        tail.value += replace
-      }
+      tail.value = whitespace(tail) ? replace : tail.value + replace
     } else {
       list.push({type: 'text', value: replace})
     }
@@ -143,13 +135,10 @@ function format(options) {
 }
 
 function padding(node, head) {
-  if (node.type === 'root') {
-    return true
-  }
-
-  if (node.type === 'element') {
-    return head || is(node, 'script') || embedded(node) || !phrasing(node)
-  }
-
-  return false
+  return (
+    node.type === 'root' ||
+    (node.type === 'element'
+      ? head || is(node, 'script') || embedded(node) || !phrasing(node)
+      : false)
+  )
 }
