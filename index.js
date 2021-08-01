@@ -10,9 +10,9 @@ import repeat from 'repeat-string'
 const minify = rehypeMinifyWhitespace({newlines: true})
 
 export default function rehypeFormat(options) {
-  var settings = options || {}
-  var indent = settings.indent || 2
-  var indentInitial = settings.indentInitial
+  const settings = options || {}
+  let indent = settings.indent || 2
+  let indentInitial = settings.indentInitial
 
   if (typeof indent === 'number') {
     indent = repeat(' ', indent)
@@ -26,20 +26,16 @@ export default function rehypeFormat(options) {
   return transform
 
   function transform(tree) {
-    var head
+    let head
 
     minify(tree)
 
     visitParents(tree, visitor)
 
     function visitor(node, parents) {
-      var children = node.children || []
-      var level = parents.length
-      var index = -1
-      var result
-      var previous
-      var child
-      var eol
+      const children = node.children || []
+      let level = parents.length
+      let index = -1
 
       if (isElement(node, 'head')) {
         head = true
@@ -54,7 +50,7 @@ export default function rehypeFormat(options) {
       }
 
       // Don’t indent content of whitespace-sensitive nodes / inlines.
-      if (!children.length || !padding(node, head)) {
+      if (children.length === 0 || !padding(node, head)) {
         return
       }
 
@@ -62,12 +58,14 @@ export default function rehypeFormat(options) {
         level--
       }
 
+      let eol
+
       // Indent newlines in `text`.
       while (++index < children.length) {
-        child = children[index]
+        const child = children[index]
 
         if (child.type === 'text' || child.type === 'comment') {
-          if (child.value.indexOf('\n') !== -1) {
+          if (child.value.includes('\n')) {
             eol = true
           }
 
@@ -78,11 +76,12 @@ export default function rehypeFormat(options) {
         }
       }
 
-      result = []
+      const result = []
+      let previous
       index = -1
 
       while (++index < children.length) {
-        child = children[index]
+        const child = children[index]
 
         if (padding(child, head) || (eol && !index)) {
           addBreak(result, level, child)
@@ -113,15 +112,15 @@ export default function rehypeFormat(options) {
       node &&
       node.type === 'element' &&
       settings.blanks &&
-      settings.blanks.length &&
-      settings.blanks.indexOf(node.tagName) > -1
+      settings.blanks.length > 0 &&
+      settings.blanks.includes(node.tagName)
     )
   }
 
   function addBreak(list, level, next) {
-    var tail = list[list.length - 1]
-    var previous = whitespace(tail) ? list[list.length - 2] : tail
-    var replace =
+    const tail = list[list.length - 1]
+    const previous = whitespace(tail) ? list[list.length - 2] : tail
+    const replace =
       (blank(previous) && blank(next) ? '\n\n' : '\n') + repeat(indent, level)
 
     if (tail && tail.type === 'text') {

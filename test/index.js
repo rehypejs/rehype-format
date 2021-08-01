@@ -7,8 +7,8 @@ import negate from 'negate'
 import {isHidden} from 'is-hidden'
 import fmt from '../index.js'
 
-test('format', function (t) {
-  var root = path.join('test', 'fixtures')
+test('format', (t) => {
+  const root = path.join('test', 'fixtures')
 
   const files = fs.readdirSync(root).filter(negate(isHidden))
 
@@ -20,20 +20,19 @@ test('format', function (t) {
   }
 
   function one(fixture) {
-    var base = path.join(root, fixture)
-    var input = readSync(path.join(base, 'input.html'))
-    var output = readSync(path.join(base, 'output.html'))
-    var config
-    var proc
+    const base = path.join(root, fixture)
+    const input = readSync(path.join(base, 'input.html'))
+    const output = readSync(path.join(base, 'output.html'))
+    let config
 
     try {
       config = JSON.parse(fs.readFileSync(path.join(base, 'config.json')))
-    } catch (_) {}
+    } catch {}
 
-    proc = rehype().use(fmt, config)
+    const proc = rehype().use(fmt, config)
 
-    proc.process(input, function (error) {
-      t.test(fixture, function (t) {
+    proc.process(input, (error) => {
+      t.test(fixture, (t) => {
         t.plan(3)
         t.ifErr(error, 'shouldn’t throw')
         t.equal(input.messages.length, 0, 'shouldn’t warn')
