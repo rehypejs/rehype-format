@@ -1,17 +1,15 @@
-'use strict'
+import rehypeMinifyWhitespace from 'rehype-minify-whitespace'
+import visit from 'unist-util-visit-parents'
+import embedded from 'hast-util-embedded'
+import phrasing from 'hast-util-phrasing'
+import whitespace from 'hast-util-whitespace'
+import is from 'hast-util-is-element'
+import {whitespaceSensitiveTagNames} from 'html-whitespace-sensitive-tag-names'
+import repeat from 'repeat-string'
 
-var minify = require('rehype-minify-whitespace')({newlines: true})
-var visit = require('unist-util-visit-parents')
-var embedded = require('hast-util-embedded')
-var phrasing = require('hast-util-phrasing')
-var whitespace = require('hast-util-whitespace')
-var is = require('hast-util-is-element')
-var sensitive = require('html-whitespace-sensitive-tag-names')
-var repeat = require('repeat-string')
+const minify = rehypeMinifyWhitespace({newlines: true})
 
-module.exports = format
-
-function format(options) {
+export default function rehypeFormat(options) {
   var settings = options || {}
   var indent = settings.indent || 2
   var indentInitial = settings.indentInitial
@@ -51,7 +49,7 @@ function format(options) {
         head = null
       }
 
-      if (is(node, sensitive)) {
+      if (is(node, whitespaceSensitiveTagNames)) {
         return visit.SKIP
       }
 

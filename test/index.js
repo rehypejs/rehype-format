@@ -1,25 +1,23 @@
-'use strict'
-
-var fs = require('fs')
-var path = require('path')
-var bail = require('bail')
-var test = require('tape')
-var rehype = require('rehype')
-var vfile = require('to-vfile')
-var negate = require('negate')
-var hidden = require('is-hidden')
-var fmt = require('..')
+import fs from 'fs'
+import path from 'path'
+import test from 'tape'
+import rehype from 'rehype'
+import vfile from 'to-vfile'
+import negate from 'negate'
+import hidden from 'is-hidden'
+import fmt from '../index.js'
 
 test('format', function (t) {
-  var root = path.join(__dirname, 'fixtures')
+  var root = path.join('test', 'fixtures')
 
-  fs.readdir(root, function (err, files) {
-    bail(err)
-    files = files.filter(negate(hidden))
-    t.plan(files.length)
+  const files = fs.readdirSync(root).filter(negate(hidden))
 
-    files.forEach(one)
-  })
+  t.plan(files.length)
+
+  let index = -1
+  while (++index < files.length) {
+    one(files[index])
+  }
 
   function one(fixture) {
     var base = path.join(root, fixture)
@@ -34,10 +32,10 @@ test('format', function (t) {
 
     proc = rehype().use(fmt, config)
 
-    proc.process(input, function (err) {
+    proc.process(input, function (error) {
       t.test(fixture, function (t) {
         t.plan(3)
-        t.ifErr(err, 'shouldn’t throw')
+        t.ifErr(error, 'shouldn’t throw')
         t.equal(input.messages.length, 0, 'shouldn’t warn')
         t.equal(String(input), String(output), 'should match')
       })
