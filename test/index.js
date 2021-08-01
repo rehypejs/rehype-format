@@ -1,16 +1,16 @@
 import fs from 'fs'
 import path from 'path'
 import test from 'tape'
-import rehype from 'rehype'
-import vfile from 'to-vfile'
+import {rehype} from 'rehype'
+import {readSync} from 'to-vfile'
 import negate from 'negate'
-import hidden from 'is-hidden'
+import {isHidden} from 'is-hidden'
 import fmt from '../index.js'
 
 test('format', function (t) {
   var root = path.join('test', 'fixtures')
 
-  const files = fs.readdirSync(root).filter(negate(hidden))
+  const files = fs.readdirSync(root).filter(negate(isHidden))
 
   t.plan(files.length)
 
@@ -21,8 +21,8 @@ test('format', function (t) {
 
   function one(fixture) {
     var base = path.join(root, fixture)
-    var input = vfile.readSync(path.join(base, 'input.html'))
-    var output = vfile.readSync(path.join(base, 'output.html'))
+    var input = readSync(path.join(base, 'input.html'))
+    var output = readSync(path.join(base, 'output.html'))
     var config
     var proc
 
