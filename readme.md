@@ -12,6 +12,9 @@
 
 ## Install
 
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
+Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
+
 [npm][]:
 
 ```sh
@@ -37,15 +40,18 @@ Say we have the following file, `index.html`:
 And our script, `example.js`, looks as follows:
 
 ```js
-var vfile = require('to-vfile')
-var report = require('vfile-reporter')
-var rehype = require('rehype')
-var format = require('rehype-format')
+import {readSync} from 'to-vfile'
+import {reporter} from 'vfile-reporter'
+import {rehype} from 'rehype'
+import rehypeFormat from 'rehype-format'
+
+const file = readSync('index.html')
 
 rehype()
-  .use(format)
-  .process(vfile.readSync('index.html'), function (err, file) {
-    console.error(report(err || file))
+  .use(rehypeFormat)
+  .process(file)
+  .then((file) => {
+    console.error(reporter(file))
     console.log(String(file))
   })
 ```
@@ -73,7 +79,10 @@ index.html: no issues found
 
 ## API
 
-### `rehype().use(format[, options])`
+This package exports no identifiers.
+The default export is `rehypeFormat`.
+
+### `unified().use(rehypeFormat[, options])`
 
 Format white space in the processed tree.
 
