@@ -37,7 +37,7 @@ Say we have the following file, `index.html`:
 </html>
 ```
 
-And our script, `example.js`, looks as follows:
+And our module, `example.js`, looks as follows:
 
 ```js
 import {readSync} from 'to-vfile'
@@ -84,7 +84,7 @@ The default export is `rehypeFormat`.
 
 ### `unified().use(rehypeFormat[, options])`
 
-Format white space in the processed tree.
+Format whitespace in the processed tree.
 
 *   Collapse all white space (to a single space or newline)
 *   Remove unneeded white space

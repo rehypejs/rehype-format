@@ -1,3 +1,26 @@
+/**
+ * @typedef {import('hast').Root} Root
+ * @typedef {Root['children'][number]} Child
+ * @typedef {import('hast').Element} Element
+ * @typedef {Root|Child} Node
+ *
+ * @typedef Options
+ *   Configuration.
+ * @property {number|string} [indent=2]
+ *   Indentation per level (`number`, `string`, default: `2`).
+ *   When number, uses that amount of spaces.
+ *   When `string`, uses that per indentation level.
+ * @property {boolean} [indentInitial=true]
+ *   Whether to indent the first level (`boolean`, default: `true`).
+ *   This is usually the `<html>`, thus not indenting `head` and `body`.
+ * @property {string[]} [blanks=[]]
+ *   List of tag names to join with a blank line (`Array.<string>`, default:
+ *   `[]`).
+ *   These tags, when next to each other, are joined by a blank line (`\n\n`).
+ *   For example, when `['head', 'body']` is given, a blank line is added
+ *   between these two.
+ */
+
 import rehypeMinifyWhitespace from 'rehype-minify-whitespace'
 import {visitParents, SKIP} from 'unist-util-visit-parents'
 import {embedded} from 'hast-util-embedded'
@@ -5,14 +28,17 @@ import {phrasing} from 'hast-util-phrasing'
 import {whitespace} from 'hast-util-whitespace'
 import {isElement} from 'hast-util-is-element'
 import {whitespaceSensitiveTagNames} from 'html-whitespace-sensitive-tag-names'
+// @ts-expect-error: to do remove.
 import repeat from 'repeat-string'
 
 const minify = rehypeMinifyWhitespace({newlines: true})
 
-export default function rehypeFormat(options) {
-  const settings = options || {}
-  let indent = settings.indent || 2
-  let indentInitial = settings.indentInitial
+/**
+ * @type {import('unified').Plugin<[Options?] | void[], Root>}
+ */
+export default function rehypeFormat(options = {}) {
+  let indent = options.indent || 2
+  let indentInitial = options.indentInitial
 
   if (typeof indent === 'number') {
     indent = repeat(' ', indent)
@@ -23,31 +49,35 @@ export default function rehypeFormat(options) {
     indentInitial = true
   }
 
-  return transform
-
-  function transform(tree) {
+  return (tree) => {
+    /** @type {boolean|undefined} */
     let head
 
+    // @ts-expect-error: fine, it’s a sync transformer.
     minify(tree)
 
-    visitParents(tree, visitor)
-
-    function visitor(node, parents) {
-      const children = node.children || []
-      let level = parents.length
+    // eslint-disable-next-line complexity
+    visitParents(tree, (node, parents) => {
       let index = -1
+
+      if (!('children' in node)) {
+        return
+      }
 
       if (isElement(node, 'head')) {
         head = true
       }
 
       if (head && isElement(node, 'body')) {
-        head = null
+        head = undefined
       }
 
       if (isElement(node, whitespaceSensitiveTagNames)) {
         return SKIP
       }
+
+      const children = node.children
+      let level = parents.length
 
       // Don’t indent content of whitespace-sensitive nodes / inlines.
       if (children.length === 0 || !padding(node, head)) {
@@ -58,6 +88,7 @@ export default function rehypeFormat(options) {
         level--
       }
 
+      /** @type {boolean|undefined} */
       let eol
 
       // Indent newlines in `text`.
@@ -76,8 +107,11 @@ export default function rehypeFormat(options) {
         }
       }
 
+      /** @type {Child[]} */
       const result = []
+      /** @type {Child|undefined} */
       let previous
+
       index = -1
 
       while (++index < children.length) {
@@ -92,7 +126,7 @@ export default function rehypeFormat(options) {
         result.push(child)
       }
 
-      if (eol || padding(previous, head)) {
+      if (previous && (eol || padding(previous, head))) {
         // Ignore trailing whitespace (if that already existed), as we’ll add
         // properly indented whitespace.
         if (whitespace(previous)) {
@@ -104,19 +138,15 @@ export default function rehypeFormat(options) {
       }
 
       node.children = result
-    }
+    })
   }
 
-  function blank(node) {
-    return (
-      node &&
-      node.type === 'element' &&
-      settings.blanks &&
-      settings.blanks.length > 0 &&
-      settings.blanks.includes(node.tagName)
-    )
-  }
-
+  /**
+   * @param {Child[]} list
+   * @param {number} level
+   * @param {Child} [next]
+   * @returns {void}
+   */
   function addBreak(list, level, next) {
     const tail = list[list.length - 1]
     const previous = whitespace(tail) ? list[list.length - 2] : tail
@@ -129,8 +159,27 @@ export default function rehypeFormat(options) {
       list.push({type: 'text', value: replace})
     }
   }
+
+  /**
+   * @param {Node|undefined} node
+   * @returns {boolean}
+   */
+  function blank(node) {
+    return Boolean(
+      node &&
+        node.type === 'element' &&
+        options.blanks &&
+        options.blanks.length > 0 &&
+        options.blanks.includes(node.tagName)
+    )
+  }
 }
 
+/**
+ * @param {Node} node
+ * @param {boolean|undefined} head
+ * @returns {boolean}
+ */
 function padding(node, head) {
   return (
     node.type === 'root' ||

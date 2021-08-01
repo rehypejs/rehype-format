@@ -1,32 +1,35 @@
+/**
+ * @typedef {import('../index.js').Options} Options
+ */
+
 import fs from 'fs'
 import path from 'path'
 import test from 'tape'
 import {rehype} from 'rehype'
 import {readSync} from 'to-vfile'
-import negate from 'negate'
 import {isHidden} from 'is-hidden'
 import fmt from '../index.js'
 
 test('format', (t) => {
   const root = path.join('test', 'fixtures')
 
-  const files = fs.readdirSync(root).filter(negate(isHidden))
+  const files = fs.readdirSync(root).filter((d) => !isHidden(d))
 
   t.plan(files.length)
 
   let index = -1
   while (++index < files.length) {
-    one(files[index])
-  }
-
-  function one(fixture) {
+    const fixture = files[index]
     const base = path.join(root, fixture)
     const input = readSync(path.join(base, 'input.html'))
     const output = readSync(path.join(base, 'output.html'))
+    /** @type {Options|undefined} */
     let config
 
     try {
-      config = JSON.parse(fs.readFileSync(path.join(base, 'config.json')))
+      config = JSON.parse(
+        String(fs.readFileSync(path.join(base, 'config.json')))
+      )
     } catch {}
 
     const proc = rehype().use(fmt, config)
