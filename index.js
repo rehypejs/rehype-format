@@ -1,9 +1,9 @@
 import rehypeMinifyWhitespace from 'rehype-minify-whitespace'
-import visit from 'unist-util-visit-parents'
-import embedded from 'hast-util-embedded'
-import phrasing from 'hast-util-phrasing'
-import whitespace from 'hast-util-whitespace'
-import is from 'hast-util-is-element'
+import {visitParents, SKIP} from 'unist-util-visit-parents'
+import {embedded} from 'hast-util-embedded'
+import {phrasing} from 'hast-util-phrasing'
+import {whitespace} from 'hast-util-whitespace'
+import {isElement} from 'hast-util-is-element'
 import {whitespaceSensitiveTagNames} from 'html-whitespace-sensitive-tag-names'
 import repeat from 'repeat-string'
 
@@ -30,7 +30,7 @@ export default function rehypeFormat(options) {
 
     minify(tree)
 
-    visit(tree, visitor)
+    visitParents(tree, visitor)
 
     function visitor(node, parents) {
       var children = node.children || []
@@ -41,16 +41,16 @@ export default function rehypeFormat(options) {
       var child
       var eol
 
-      if (is(node, 'head')) {
+      if (isElement(node, 'head')) {
         head = true
       }
 
-      if (head && is(node, 'body')) {
+      if (head && isElement(node, 'body')) {
         head = null
       }
 
-      if (is(node, whitespaceSensitiveTagNames)) {
-        return visit.SKIP
+      if (isElement(node, whitespaceSensitiveTagNames)) {
+        return SKIP
       }
 
       // Don’t indent content of whitespace-sensitive nodes / inlines.
@@ -136,7 +136,7 @@ function padding(node, head) {
   return (
     node.type === 'root' ||
     (node.type === 'element'
-      ? head || is(node, 'script') || embedded(node) || !phrasing(node)
+      ? head || isElement(node, 'script') || embedded(node) || !phrasing(node)
       : false)
   )
 }
