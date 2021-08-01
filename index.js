@@ -28,8 +28,6 @@ import {phrasing} from 'hast-util-phrasing'
 import {whitespace} from 'hast-util-whitespace'
 import {isElement} from 'hast-util-is-element'
 import {whitespaceSensitiveTagNames} from 'html-whitespace-sensitive-tag-names'
-// @ts-expect-error: to do remove.
-import repeat from 'repeat-string'
 
 const minify = rehypeMinifyWhitespace({newlines: true})
 
@@ -41,7 +39,7 @@ export default function rehypeFormat(options = {}) {
   let indentInitial = options.indentInitial
 
   if (typeof indent === 'number') {
-    indent = repeat(' ', indent)
+    indent = ' '.repeat(indent)
   }
 
   // Default to indenting the initial level.
@@ -102,7 +100,7 @@ export default function rehypeFormat(options = {}) {
 
           child.value = child.value.replace(
             / *\n/g,
-            '$&' + repeat(indent, level)
+            '$&' + String(indent).repeat(level)
           )
         }
       }
@@ -151,7 +149,8 @@ export default function rehypeFormat(options = {}) {
     const tail = list[list.length - 1]
     const previous = whitespace(tail) ? list[list.length - 2] : tail
     const replace =
-      (blank(previous) && blank(next) ? '\n\n' : '\n') + repeat(indent, level)
+      (blank(previous) && blank(next) ? '\n\n' : '\n') +
+      String(indent).repeat(Math.max(level, 0))
 
     if (tail && tail.type === 'text') {
       tail.value = whitespace(tail) ? replace : tail.value + replace
