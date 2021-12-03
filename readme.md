@@ -34,7 +34,8 @@ This package is a [unified][] ([rehype][]) plugin to format whitespace in HTML.
 In short, it works as follows:
 
 *   collapse all existing white space to either a line ending or a single space
-*   remove those spaces and line endings if they do not contribute to the document
+*   remove those spaces and line endings if they do not contribute to the
+    document
 *   inject needed line endings
 *   indent previously collapsed line endings properly
 
