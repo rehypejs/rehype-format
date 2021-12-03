@@ -13,8 +13,8 @@
  * @property {boolean} [indentInitial=true]
  *   Whether to indent the first level (`boolean`, default: `true`).
  *   This is usually the `<html>`, thus not indenting `head` and `body`.
- * @property {string[]} [blanks=[]]
- *   List of tag names to join with a blank line (`Array.<string>`, default:
+ * @property {Array<string>} [blanks=[]]
+ *   List of tag names to join with a blank line (`Array<string>`, default:
  *   `[]`).
  *   These tags, when next to each other, are joined by a blank line (`\n\n`).
  *   For example, when `['head', 'body']` is given, a blank line is added
@@ -32,7 +32,9 @@ import {whitespaceSensitiveTagNames} from 'html-whitespace-sensitive-tag-names'
 const minify = rehypeMinifyWhitespace({newlines: true})
 
 /**
- * @type {import('unified').Plugin<[Options?] | void[], Root>}
+ * Format whitespace in HTML.
+ *
+ * @type {import('unified').Plugin<[Options?] | Array<void>, Root>}
  */
 export default function rehypeFormat(options = {}) {
   let indent = options.indent || 2
@@ -105,7 +107,7 @@ export default function rehypeFormat(options = {}) {
         }
       }
 
-      /** @type {Child[]} */
+      /** @type {Array<Child>} */
       const result = []
       /** @type {Child|undefined} */
       let previous
@@ -140,7 +142,7 @@ export default function rehypeFormat(options = {}) {
   }
 
   /**
-   * @param {Child[]} list
+   * @param {Array<Child>} list
    * @param {number} level
    * @param {Child} [next]
    * @returns {void}
