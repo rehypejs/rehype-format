@@ -8,22 +8,79 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-[**rehype**][rehype] plugin to format HTML.
+**[rehype][]** plugin to format HTML.
+
+## Contents
+
+*   [What is this?](#what-is-this)
+*   [When should I use this?](#when-should-i-use-this)
+*   [Install](#install)
+*   [Use](#use)
+*   [API](#api)
+    *   [`unified().use(rehypeFormat[, options])`](#unifieduserehypeformat-options)
+*   [Examples](#examples)
+    *   [Example: markdown input (remark)](#example-markdown-input-remark)
+    *   [Example: tabs and blank lines (`indent`, `blanks`)](#example-tabs-and-blank-lines-indent-blanks)
+*   [Types](#types)
+*   [Compatibility](#compatibility)
+*   [Security](#security)
+*   [Related](#related)
+*   [Contribute](#contribute)
+*   [License](#license)
+
+## What is this?
+
+This package is a [unified][] ([rehype][]) plugin to format whitespace in HTML.
+In short, it works as follows:
+
+*   collapse all existing white space to either a line ending or a single space
+*   remove those spaces and line endings if they do not contribute to the
+    document
+*   inject needed line endings
+*   indent previously collapsed line endings properly
+
+**unified** is a project that transforms content with abstract syntax trees
+(ASTs).
+**rehype** adds support for HTML to unified.
+**hast** is the HTML AST that rehype uses.
+This is a rehype plugin that changes whitespace in hast.
+
+## When should I use this?
+
+This package is useful when you want to improve the readability of HTML source
+code as it adds insignificant but pretty whitespace between elements.
+A different package, [`rehype-stringify`][rehype-stringify], controls how HTML
+is actually printed: which quotes to use, whether to put a `/` on `<img />`,
+etc.
+Yet another project, [`rehype-minify`][rehype-minify], does the inverse: improve
+the size of HTML source code by making it hard to read.
 
 ## Install
 
-This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
-Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
-
-[npm][]:
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
+In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
 
 ```sh
 npm install rehype-format
 ```
 
+In Deno with [Skypack][]:
+
+```js
+import rehypeFormat from 'https://cdn.skypack.dev/rehype-format@4?dts'
+```
+
+In browsers with [Skypack][]:
+
+```html
+<script type="module">
+  import rehypeFormat from 'https://cdn.skypack.dev/rehype-format@4?min'
+</script>
+```
+
 ## Use
 
-Say we have the following file, `index.html`:
+Say we have the following file `index.html`:
 
 ```html
 <!doCTYPE HTML><html>
@@ -37,30 +94,29 @@ Say we have the following file, `index.html`:
 </html>
 ```
 
-And our module, `example.js`, looks as follows:
+And our module `example.js` looks as follows:
 
 ```js
-import {readSync} from 'to-vfile'
-import {reporter} from 'vfile-reporter'
-import {rehype} from 'rehype'
+import {read} from 'to-vfile'
+import {unified} from 'unified'
+import rehypeParse from 'rehype-parse'
 import rehypeFormat from 'rehype-format'
+import rehypeStringify from 'rehype-stringify'
 
-const file = readSync('index.html')
+main()
 
-rehype()
-  .use(rehypeFormat)
-  .process(file)
-  .then((file) => {
-    console.error(reporter(file))
-    console.log(String(file))
-  })
+async function main() {
+  const file = await unified()
+    .use(rehypeParse)
+    .use(rehypeFormat)
+    .use(rehypeStringify)
+    .process(await read('index.html'))
+
+  console.log(String(file))
+}
 ```
 
-Now, running `node example` yields:
-
-```txt
-index.html: no issues found
-```
+Now running `node example.js` yields:
 
 ```html
 <!doctype html>
@@ -84,57 +140,158 @@ The default export is `rehypeFormat`.
 
 ### `unified().use(rehypeFormat[, options])`
 
-Format whitespace in the processed tree.
-
-*   Collapse all white space (to a single space or newline)
-*   Remove unneeded white space
-*   Inject needed newlines and indentation
-*   Indent previously collapsed newlines properly
-
-All superfluous white space is removed.
-However, as newlines are kept (and later properly indented), your code will
-still line-wrap as expected.
+Format whitespace in HTML.
 
 ##### `options`
+
+Configuration (optional).
 
 ###### `options.indent`
 
 Indentation per level (`number`, `string`, default: `2`).
-When number, uses that amount of spaces.
+When `number`, uses that amount of spaces.
 When `string`, uses that per indentation level.
 
 ###### `options.indentInitial`
 
 Whether to indent the first level (`boolean`, default: `true`).
-This is usually the `<html>`, thus not indenting `head` and `body`.
+The initial element is usually the `<html>` element, so when this is set to
+`false`, its children `<head>` and `<body>` would not be indented.
 
 ###### `options.blanks`
 
-List of tag names to join with a blank line (`Array.<string>`, default: `[]`).
+List of tag names to join with a blank line (`Array<string>`, default: `[]`).
 These tags, when next to each other, are joined by a blank line (`\n\n`).
 For example, when `['head', 'body']` is given, a blank line is added between
 these two.
 
+## Examples
+
+### Example: markdown input (remark)
+
+The following example shows how remark and rehype can be combined to turn
+markdown into HTML, using this plugin to pretty print the HTML:
+
+```js
+import {unified} from 'unified'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import rehypeDocument from 'rehype-document'
+import rehypeFormat from 'rehype-format'
+import rehypeStringify from 'rehype-stringify'
+
+main()
+
+async function main() {
+  const file = await unified()
+    .use(remarkParse)
+    .use(remarkRehype)
+    .use(rehypeDocument, {title: 'Neptune'})
+    .use(rehypeFormat)
+    .use(rehypeStringify)
+    .process('# Hello, Neptune!')
+
+  console.log(String(file))
+}
+```
+
+Yields:
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Neptune</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <h1>Hello, Neptune!</h1>
+  </body>
+</html>
+```
+
+### Example: tabs and blank lines (`indent`, `blanks`)
+
+The following example shows how this plugin can format with tabs instead of
+spaces by passing the `indent` option and how blank lines can be added between
+certain elements:
+
+```js
+import {unified} from 'unified'
+import rehypeParse from 'rehype-parse'
+import rehypeFormat from 'rehype-format'
+import rehypeStringify from 'rehype-stringify'
+
+main()
+
+async function main() {
+  const file = await unified()
+    .use(rehypeParse)
+    .use(rehypeFormat, {indent: '\t', blanks: ['head', 'body']})
+    .use(rehypeStringify)
+    .process('<h1>Hi!</h1><p>Hello, Venus!</p>')
+
+  console.log(String(file))
+}
+```
+
+Yields:
+
+<!--lint ignore no-tabs-->
+
+```html
+<html>
+	<head></head>
+
+	<body>
+		<h1>Hi!</h1>
+		<p>Hello, Venus!</p>
+	</body>
+</html>
+```
+
+> 👉 **Note**: the added tags (`html`, `head`, and `body`) do not come from this
+> plugin.
+> They’re instead added by `rehype-parse`, which in document mode (default),
+> adds them according to the HTML spec.
+
+## Types
+
+This package is fully typed with [TypeScript][].
+It exports an `Options` type, which specifies the interface of the accepted
+options.
+
+## Compatibility
+
+Projects maintained by the unified collective are compatible with all maintained
+versions of Node.js.
+As of now, that is Node.js 12.20+, 14.14+, and 16.0+.
+Our projects sometimes work with older versions, but this is not guaranteed.
+
+This plugin works with `rehype-parse` version 3+, `rehype-stringify` version 3+,
+`rehype` version 5+, and `unified` version 6+.
+
 ## Security
 
-Use of `rehype-format` changes white space in the syntax tree.
+Use of `rehype-format` changes white space in the tree.
 White space in `<script>`, `<style>`, `<pre>`, or `<textarea>` is not modified.
 If the tree is already safe, use of this plugin does not open you up for a
 [cross-site scripting (XSS)][xss] attack.
-When in doubt, use [`rehype-sanitize`][sanitize].
+When in doubt, use [`rehype-sanitize`][rehype-sanitize].
 
 ## Related
 
 *   [`rehype-minify`](https://github.com/rehypejs/rehype-minify)
-    — Minify HTML
+    — minify HTML
 *   [`rehype-document`](https://github.com/rehypejs/rehype-document)
-    — Wrap a document around a fragment
+    — wrap a fragment in a document
 *   [`rehype-sanitize`](https://github.com/rehypejs/rehype-sanitize)
-    — Sanitize HTML
+    — sanitize HTML
 *   [`rehype-toc`](https://github.com/JS-DevTools/rehype-toc)
-    — Add a table of contents (TOC)
+    — add a table of contents (TOC)
 *   [`rehype-section`](https://github.com/agentofuser/rehype-section)
-    — Wrap headings and their contents in sections
+    — wrap headings and their contents in sections
 
 ## Contribute
 
@@ -178,6 +335,8 @@ abide by its terms.
 
 [chat]: https://github.com/rehypejs/rehype/discussions
 
+[skypack]: https://www.skypack.dev
+
 [npm]: https://docs.npmjs.com/cli/install
 
 [health]: https://github.com/rehypejs/.github
@@ -192,8 +351,16 @@ abide by its terms.
 
 [author]: https://wooorm.com
 
-[rehype]: https://github.com/rehypejs/rehype
-
 [xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
 
-[sanitize]: https://github.com/rehypejs/rehype-sanitize
+[typescript]: https://www.typescriptlang.org
+
+[unified]: https://github.com/unifiedjs/unified
+
+[rehype]: https://github.com/rehypejs/rehype
+
+[rehype-stringify]: https://github.com/rehypejs/rehype/tree/main/packages/rehype-stringify
+
+[rehype-sanitize]: https://github.com/rehypejs/rehype-sanitize
+
+[rehype-minify]: https://github.com/rehypejs/rehype-minify
