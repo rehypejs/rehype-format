@@ -64,17 +64,17 @@ In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
 npm install rehype-format
 ```
 
-In Deno with [Skypack][]:
+In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import rehypeFormat from 'https://cdn.skypack.dev/rehype-format@4?dts'
+import rehypeFormat from 'https://esm.sh/rehype-format@4'
 ```
 
-In browsers with [Skypack][]:
+In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import rehypeFormat from 'https://cdn.skypack.dev/rehype-format@4?min'
+  import rehypeFormat from 'https://esm.sh/rehype-format@4?bundle'
 </script>
 ```
 
@@ -335,7 +335,7 @@ abide by its terms.
 
 [chat]: https://github.com/rehypejs/rehype/discussions
 
-[skypack]: https://www.skypack.dev
+[esmsh]: https://esm.sh
 
 [npm]: https://docs.npmjs.com/cli/install
 
