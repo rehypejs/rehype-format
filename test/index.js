@@ -32,6 +32,7 @@ test('format', (t) => {
       )
     } catch {}
 
+    // @ts-expect-error: to do.
     const proc = rehype().use(fmt, config)
 
     proc.process(input, (error) => {
