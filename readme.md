@@ -18,6 +18,7 @@
 *   [Use](#use)
 *   [API](#api)
     *   [`unified().use(rehypeFormat[, options])`](#unifieduserehypeformat-options)
+    *   [`Options`](#options)
 *   [Examples](#examples)
     *   [Example: markdown input (remark)](#example-markdown-input-remark)
     *   [Example: tabs and blank lines (`indent`, `blanks`)](#example-tabs-and-blank-lines-indent-blanks)
@@ -57,8 +58,8 @@ the size of HTML source code by making it hard to read.
 
 ## Install
 
-This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
-In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
+This package is [ESM only][esm].
+In Node.js (version 16+), install with [npm][]:
 
 ```sh
 npm install rehype-format
@@ -94,29 +95,25 @@ Say we have the following file `index.html`:
 </html>
 ```
 
-And our module `example.js` looks as follows:
+…and our module `example.js` looks as follows:
 
 ```js
+import rehypeFormat from 'rehype-format'
+import rehypeParse from 'rehype-parse'
+import rehypeStringify from 'rehype-stringify'
 import {read} from 'to-vfile'
 import {unified} from 'unified'
-import rehypeParse from 'rehype-parse'
-import rehypeFormat from 'rehype-format'
-import rehypeStringify from 'rehype-stringify'
 
-main()
+const file = await unified()
+  .use(rehypeParse)
+  .use(rehypeFormat)
+  .use(rehypeStringify)
+  .process(await read('index.html'))
 
-async function main() {
-  const file = await unified()
-    .use(rehypeParse)
-    .use(rehypeFormat)
-    .use(rehypeStringify)
-    .process(await read('index.html'))
-
-  console.log(String(file))
-}
+console.log(String(file))
 ```
 
-Now running `node example.js` yields:
+…then running `node example.js` yields:
 
 ```html
 <!doctype html>
@@ -136,34 +133,37 @@ Now running `node example.js` yields:
 ## API
 
 This package exports no identifiers.
-The default export is `rehypeFormat`.
+The default export is [`rehypeFormat`][api-rehype-format].
 
 ### `unified().use(rehypeFormat[, options])`
 
 Format whitespace in HTML.
 
-##### `options`
+###### Parameters
 
-Configuration (optional).
+*   `options` ([`Options`][api-options], optional)
+    — configuration
 
-###### `options.indent`
+###### Returns
 
-Indentation per level (`number`, `string`, default: `2`).
-When `number`, uses that amount of spaces.
-When `string`, uses that per indentation level.
+Transform ([`Transformer`][transformer]).
 
-###### `options.indentInitial`
+### `Options`
 
-Whether to indent the first level (`boolean`, default: `true`).
-The initial element is usually the `<html>` element, so when this is set to
-`false`, its children `<head>` and `<body>` would not be indented.
+Configuration (TypeScript type).
 
-###### `options.blanks`
+###### Fields
 
-List of tag names to join with a blank line (`Array<string>`, default: `[]`).
-These tags, when next to each other, are joined by a blank line (`\n\n`).
-For example, when `['head', 'body']` is given, a blank line is added between
-these two.
+*   `blanks` (`Array<string>`, default: `[]`)
+    — list of tag names to join with a blank line (default: `[]`); these tags,
+    when next to each other, are joined by a blank line (`\n\n`); for example,
+    when `['head', 'body']` is given, a blank line is added between these two
+*   `indent` (`number`, `string`, default: `2`)
+    — indentation per level (default: `2`); when number, uses that amount of
+    spaces; when `string`, uses that per indentation level
+*   `indentInitial` (`boolean`, default: `true`)
+    — whether to indent the first level (default: `true`); this is usually the
+    `<html>`, thus not indenting `head` and `body`
 
 ## Examples
 
@@ -173,26 +173,22 @@ The following example shows how remark and rehype can be combined to turn
 markdown into HTML, using this plugin to pretty print the HTML:
 
 ```js
-import {unified} from 'unified'
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
 import rehypeDocument from 'rehype-document'
 import rehypeFormat from 'rehype-format'
 import rehypeStringify from 'rehype-stringify'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import {unified} from 'unified'
 
-main()
+const file = await unified()
+  .use(remarkParse)
+  .use(remarkRehype)
+  .use(rehypeDocument, {title: 'Neptune'})
+  .use(rehypeFormat)
+  .use(rehypeStringify)
+  .process('# Hello, Neptune!')
 
-async function main() {
-  const file = await unified()
-    .use(remarkParse)
-    .use(remarkRehype)
-    .use(rehypeDocument, {title: 'Neptune'})
-    .use(rehypeFormat)
-    .use(rehypeStringify)
-    .process('# Hello, Neptune!')
-
-  console.log(String(file))
-}
+console.log(String(file))
 ```
 
 Yields:
@@ -218,22 +214,18 @@ spaces by passing the `indent` option and how blank lines can be added between
 certain elements:
 
 ```js
-import {unified} from 'unified'
-import rehypeParse from 'rehype-parse'
 import rehypeFormat from 'rehype-format'
+import rehypeParse from 'rehype-parse'
 import rehypeStringify from 'rehype-stringify'
+import {unified} from 'unified'
 
-main()
+const file = await unified()
+  .use(rehypeParse)
+  .use(rehypeFormat, {blanks: ['head', 'body'], indent: '\t'})
+  .use(rehypeStringify)
+  .process('<h1>Hi!</h1><p>Hello, Venus!</p>')
 
-async function main() {
-  const file = await unified()
-    .use(rehypeParse)
-    .use(rehypeFormat, blanks: ['head', 'body'], {indent: '\t'})
-    .use(rehypeStringify)
-    .process('<h1>Hi!</h1><p>Hello, Venus!</p>')
-
-  console.log(String(file))
-}
+console.log(String(file))
 ```
 
 Yields:
@@ -259,15 +251,17 @@ Yields:
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports an `Options` type, which specifies the interface of the accepted
-options.
+It exports the additional type [`Options`][api-options].
 
 ## Compatibility
 
-Projects maintained by the unified collective are compatible with all maintained
+Projects maintained by the unified collective are compatible with maintained
 versions of Node.js.
-As of now, that is Node.js 12.20+, 14.14+, and 16.0+.
-Our projects sometimes work with older versions, but this is not guaranteed.
+
+When we cut a new major release, we drop support for unmaintained versions of
+Node.
+This means we try to keep the current release line, `rehype-format@^4`,
+compatible with Node.js 12.
 
 This plugin works with `rehype-parse` version 3+, `rehype-stringify` version 3+,
 `rehype` version 5+, and `unified` version 6+.
@@ -321,9 +315,9 @@ abide by its terms.
 
 [downloads]: https://www.npmjs.com/package/rehype-format
 
-[size-badge]: https://img.shields.io/bundlephobia/minzip/rehype-format.svg
+[size-badge]: https://img.shields.io/bundlejs/size/rehype-format
 
-[size]: https://bundlephobia.com/result?p=rehype-format
+[size]: https://bundlejs.com/?q=rehype-format
 
 [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
 
@@ -335,17 +329,19 @@ abide by its terms.
 
 [chat]: https://github.com/rehypejs/rehype/discussions
 
+[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
 [esmsh]: https://esm.sh
 
 [npm]: https://docs.npmjs.com/cli/install
 
 [health]: https://github.com/rehypejs/.github
 
-[contributing]: https://github.com/rehypejs/.github/blob/HEAD/contributing.md
+[contributing]: https://github.com/rehypejs/.github/blob/main/contributing.md
 
-[support]: https://github.com/rehypejs/.github/blob/HEAD/support.md
+[support]: https://github.com/rehypejs/.github/blob/main/support.md
 
-[coc]: https://github.com/rehypejs/.github/blob/HEAD/code-of-conduct.md
+[coc]: https://github.com/rehypejs/.github/blob/main/code-of-conduct.md
 
 [license]: license
 
@@ -357,6 +353,8 @@ abide by its terms.
 
 [unified]: https://github.com/unifiedjs/unified
 
+[transformer]: https://github.com/unifiedjs/unified#transformer
+
 [rehype]: https://github.com/rehypejs/rehype
 
 [rehype-stringify]: https://github.com/rehypejs/rehype/tree/main/packages/rehype-stringify
@@ -364,3 +362,7 @@ abide by its terms.
 [rehype-sanitize]: https://github.com/rehypejs/rehype-sanitize
 
 [rehype-minify]: https://github.com/rehypejs/rehype-minify
+
+[api-options]: #options
+
+[api-rehype-format]: #unifieduserehypeformat-options
