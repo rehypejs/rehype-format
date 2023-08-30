@@ -8,13 +8,17 @@ import test from 'node:test'
 import {isHidden} from 'is-hidden'
 import {rehype} from 'rehype'
 import {read} from 'to-vfile'
-import fmt from '../index.js'
+import rehypeFormat from '../index.js'
 
-test('format', async function (t) {
+test('rehype-format', async function (t) {
+  await t.test('should expose the public api', async function () {
+    assert.deepEqual(Object.keys(await import('../index.js')).sort(), [
+      'default'
+    ])
+  })
+
   const root = new URL('fixtures/', import.meta.url)
-
   const files = await fs.readdir(root)
-
   let index = -1
 
   while (++index < files.length) {
@@ -38,13 +42,10 @@ test('format', async function (t) {
         )
       } catch {}
 
-      const result = await rehype()
-        // @ts-expect-error: to do: fix types.
-        .use(fmt, config)
-        .process(input)
+      const result = await rehype().use(rehypeFormat, config).process(input)
 
-      assert.equal(result.messages.length, 0, 'shouldn’t warn')
-      assert.equal(String(input), String(output), 'should match')
+      assert.equal(result.messages.length, 0)
+      assert.equal(String(input), String(output))
     })
   }
 })

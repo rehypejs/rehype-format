@@ -228,7 +228,7 @@ main()
 async function main() {
   const file = await unified()
     .use(rehypeParse)
-    .use(rehypeFormat, {indent: '\t', blanks: ['head', 'body']})
+    .use(rehypeFormat, blanks: ['head', 'body'], {indent: '\t'})
     .use(rehypeStringify)
     .process('<h1>Hi!</h1><p>Hello, Venus!</p>')
 
