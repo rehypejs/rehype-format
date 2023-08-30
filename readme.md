@@ -68,14 +68,14 @@ npm install rehype-format
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import rehypeFormat from 'https://esm.sh/rehype-format@4'
+import rehypeFormat from 'https://esm.sh/rehype-format@5'
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import rehypeFormat from 'https://esm.sh/rehype-format@4?bundle'
+  import rehypeFormat from 'https://esm.sh/rehype-format@5?bundle'
 </script>
 ```
 
