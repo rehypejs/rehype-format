@@ -2,46 +2,49 @@
  * @typedef {import('../index.js').Options} Options
  */
 
-import fs from 'node:fs'
-import path from 'node:path'
-import test from 'tape'
-import {rehype} from 'rehype'
-import {readSync} from 'to-vfile'
+import assert from 'node:assert/strict'
+import fs from 'node:fs/promises'
+import test from 'node:test'
 import {isHidden} from 'is-hidden'
+import {rehype} from 'rehype'
+import {read} from 'to-vfile'
 import fmt from '../index.js'
 
-test('format', (t) => {
-  const root = path.join('test', 'fixtures')
+test('format', async function (t) {
+  const root = new URL('fixtures/', import.meta.url)
 
-  const files = fs.readdirSync(root).filter((d) => !isHidden(d))
-
-  t.plan(files.length)
+  const files = await fs.readdir(root)
 
   let index = -1
+
   while (++index < files.length) {
-    const fixture = files[index]
-    const base = path.join(root, fixture)
-    const input = readSync(path.join(base, 'input.html'))
-    const output = readSync(path.join(base, 'output.html'))
-    /** @type {Options|undefined} */
-    let config
+    const name = files[index]
 
-    try {
-      config = JSON.parse(
-        String(fs.readFileSync(path.join(base, 'config.json')))
-      )
-    } catch {}
+    if (isHidden(name)) {
+      continue
+    }
 
-    // @ts-expect-error: to do.
-    const proc = rehype().use(fmt, config)
+    // eslint-disable-next-line no-await-in-loop
+    await t.test(name, async function () {
+      const folder = new URL(name + '/', root)
+      const input = await read(new URL('input.html', folder))
+      const output = await read(new URL('output.html', folder))
+      /** @type {Options | undefined} */
+      let config
 
-    proc.process(input, (error) => {
-      t.test(fixture, (t) => {
-        t.plan(3)
-        t.ifErr(error, 'shouldn’t throw')
-        t.equal(input.messages.length, 0, 'shouldn’t warn')
-        t.equal(String(input), String(output), 'should match')
-      })
+      try {
+        config = JSON.parse(
+          String(await fs.readFile(new URL('config.json', folder)))
+        )
+      } catch {}
+
+      const result = await rehype()
+        // @ts-expect-error: to do: fix types.
+        .use(fmt, config)
+        .process(input)
+
+      assert.equal(result.messages.length, 0, 'shouldn’t warn')
+      assert.equal(String(input), String(output), 'should match')
     })
   }
 })
