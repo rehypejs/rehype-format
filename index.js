@@ -1,8 +1,7 @@
 /**
+ * @typedef {import('hast').Nodes} Nodes
  * @typedef {import('hast').Root} Root
- * @typedef {Root['children'][number]} Child
- * @typedef {import('hast').Element} Element
- * @typedef {Root|Child} Node
+ * @typedef {import('hast').RootContent} RootContent
  *
  * @typedef Options
  *   Configuration.
@@ -29,7 +28,7 @@ import {whitespace} from 'hast-util-whitespace'
 import {isElement} from 'hast-util-is-element'
 import {whitespaceSensitiveTagNames} from 'html-whitespace-sensitive-tag-names'
 
-const minify = rehypeMinifyWhitespace({newlines: true})
+const transformWhitespace = rehypeMinifyWhitespace({newlines: true})
 
 /**
  * Format whitespace in HTML.
@@ -53,8 +52,7 @@ export default function rehypeFormat(options = {}) {
     /** @type {boolean|undefined} */
     let head
 
-    // @ts-expect-error: fine, it’s a sync transformer.
-    minify(tree)
+    transformWhitespace(tree)
 
     // eslint-disable-next-line complexity
     visitParents(tree, (node, parents) => {
@@ -107,9 +105,9 @@ export default function rehypeFormat(options = {}) {
         }
       }
 
-      /** @type {Array<Child>} */
+      /** @type {Array<RootContent>} */
       const result = []
-      /** @type {Child|undefined} */
+      /** @type {RootContent|undefined} */
       let previous
 
       index = -1
@@ -142,14 +140,14 @@ export default function rehypeFormat(options = {}) {
   }
 
   /**
-   * @param {Array<Child>} list
+   * @param {Array<RootContent>} list
    * @param {number} level
-   * @param {Child} [next]
+   * @param {RootContent} [next]
    * @returns {void}
    */
   function addBreak(list, level, next) {
     const tail = list[list.length - 1]
-    const previous = whitespace(tail) ? list[list.length - 2] : tail
+    const previous = tail && whitespace(tail) ? list[list.length - 2] : tail
     const replace =
       (blank(previous) && blank(next) ? '\n\n' : '\n') +
       String(indent).repeat(Math.max(level, 0))
@@ -162,7 +160,7 @@ export default function rehypeFormat(options = {}) {
   }
 
   /**
-   * @param {Node|undefined} node
+   * @param {Nodes|undefined} node
    * @returns {boolean}
    */
   function blank(node) {
@@ -177,7 +175,7 @@ export default function rehypeFormat(options = {}) {
 }
 
 /**
- * @param {Node} node
+ * @param {Nodes} node
  * @param {boolean|undefined} head
  * @returns {boolean}
  */
