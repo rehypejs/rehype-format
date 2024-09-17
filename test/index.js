@@ -1,5 +1,5 @@
 /**
- * @typedef {import('rehype-format').Options} Options
+ * @import {Options} from 'rehype-format'
  */
 
 import assert from 'node:assert/strict'
