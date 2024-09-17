@@ -12,33 +12,33 @@
 
 ## Contents
 
-*   [What is this?](#what-is-this)
-*   [When should I use this?](#when-should-i-use-this)
-*   [Install](#install)
-*   [Use](#use)
-*   [API](#api)
-    *   [`unified().use(rehypeFormat[, options])`](#unifieduserehypeformat-options)
-    *   [`Options`](#options)
-*   [Examples](#examples)
-    *   [Example: markdown input (remark)](#example-markdown-input-remark)
-    *   [Example: tabs and blank lines (`indent`, `blanks`)](#example-tabs-and-blank-lines-indent-blanks)
-*   [Types](#types)
-*   [Compatibility](#compatibility)
-*   [Security](#security)
-*   [Related](#related)
-*   [Contribute](#contribute)
-*   [License](#license)
+* [What is this?](#what-is-this)
+* [When should I use this?](#when-should-i-use-this)
+* [Install](#install)
+* [Use](#use)
+* [API](#api)
+  * [`unified().use(rehypeFormat[, options])`](#unifieduserehypeformat-options)
+  * [`Options`](#options)
+* [Examples](#examples)
+  * [Example: markdown input (remark)](#example-markdown-input-remark)
+  * [Example: tabs and blank lines (`indent`, `blanks`)](#example-tabs-and-blank-lines-indent-blanks)
+* [Types](#types)
+* [Compatibility](#compatibility)
+* [Security](#security)
+* [Related](#related)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## What is this?
 
 This package is a [unified][] ([rehype][]) plugin to format whitespace in HTML.
 In short, it works as follows:
 
-*   collapse all existing white space to either a line ending or a single space
-*   remove those spaces and line endings if they do not contribute to the
-    document
-*   inject needed line endings
-*   indent previously collapsed line endings properly
+* collapse all existing white space to either a line ending or a single space
+* remove those spaces and line endings if they do not contribute to the
+  document
+* inject needed line endings
+* indent previously collapsed line endings properly
 
 **unified** is a project that transforms content with abstract syntax trees
 (ASTs).
@@ -141,8 +141,8 @@ Format whitespace in HTML.
 
 ###### Parameters
 
-*   `options` ([`Options`][api-options], optional)
-    — configuration
+* `options` ([`Options`][api-options], optional)
+  — configuration
 
 ###### Returns
 
@@ -154,16 +154,16 @@ Configuration (TypeScript type).
 
 ###### Fields
 
-*   `blanks` (`Array<string>`, default: `[]`)
-    — list of tag names to join with a blank line (default: `[]`); these tags,
-    when next to each other, are joined by a blank line (`\n\n`); for example,
-    when `['head', 'body']` is given, a blank line is added between these two
-*   `indent` (`number`, `string`, default: `2`)
-    — indentation per level (default: `2`); when number, uses that amount of
-    spaces; when `string`, uses that per indentation level
-*   `indentInitial` (`boolean`, default: `true`)
-    — whether to indent the first level (default: `true`); this is usually the
-    `<html>`, thus not indenting `head` and `body`
+* `blanks` (`Array<string>`, default: `[]`)
+  — list of tag names to join with a blank line (default: `[]`); these tags,
+  when next to each other, are joined by a blank line (`\n\n`); for example,
+  when `['head', 'body']` is given, a blank line is added between these two
+* `indent` (`number`, `string`, default: `2`)
+  — indentation per level (default: `2`); when number, uses that amount of
+  spaces; when `string`, uses that per indentation level
+* `indentInitial` (`boolean`, default: `true`)
+  — whether to indent the first level (default: `true`); this is usually the
+  `<html>`, thus not indenting `head` and `body`
 
 ## Examples
 
@@ -276,16 +276,16 @@ When in doubt, use [`rehype-sanitize`][rehype-sanitize].
 
 ## Related
 
-*   [`rehype-minify`](https://github.com/rehypejs/rehype-minify)
-    — minify HTML
-*   [`rehype-document`](https://github.com/rehypejs/rehype-document)
-    — wrap a fragment in a document
-*   [`rehype-sanitize`](https://github.com/rehypejs/rehype-sanitize)
-    — sanitize HTML
-*   [`rehype-toc`](https://github.com/JS-DevTools/rehype-toc)
-    — add a table of contents (TOC)
-*   [`rehype-section`](https://github.com/agentofuser/rehype-section)
-    — wrap headings and their contents in sections
+* [`rehype-minify`](https://github.com/rehypejs/rehype-minify)
+  — minify HTML
+* [`rehype-document`](https://github.com/rehypejs/rehype-document)
+  — wrap a fragment in a document
+* [`rehype-sanitize`](https://github.com/rehypejs/rehype-sanitize)
+  — sanitize HTML
+* [`rehype-toc`](https://github.com/JS-DevTools/rehype-toc)
+  — add a table of contents (TOC)
+* [`rehype-section`](https://github.com/agentofuser/rehype-section)
+  — wrap headings and their contents in sections
 
 ## Contribute
 
