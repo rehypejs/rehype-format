@@ -34,7 +34,7 @@
 This package is a [unified][] ([rehype][]) plugin to format whitespace in HTML.
 In short, it works as follows:
 
-* collapse all existing white space to either a line ending or a single space
+* collapse all existing whitespace to either a line ending or a single space
 * remove those spaces and line endings if they do not contribute to the
   document
 * inject needed line endings
@@ -104,11 +104,13 @@ import rehypeStringify from 'rehype-stringify'
 import {read} from 'to-vfile'
 import {unified} from 'unified'
 
-const file = await unified()
+const file = await read('index.html')
+
+await unified()
   .use(rehypeParse)
   .use(rehypeFormat)
   .use(rehypeStringify)
-  .process(await read('index.html'))
+  .process(file)
 
 console.log(String(file))
 ```
@@ -221,7 +223,7 @@ import {unified} from 'unified'
 
 const file = await unified()
   .use(rehypeParse)
-  .use(rehypeFormat, {blanks: ['head', 'body'], indent: '\t'})
+  .use(rehypeFormat, {blanks: ['body', 'head'], indent: '\t'})
   .use(rehypeStringify)
   .process('<h1>Hi!</h1><p>Hello, Venus!</p>')
 
@@ -260,7 +262,7 @@ versions of Node.js.
 
 When we cut a new major release, we drop support for unmaintained versions of
 Node.
-This means we try to keep the current release line, `rehype-format@^5`,
+This means we try to keep the current release line, `rehype-format@5`,
 compatible with Node.js 16.
 
 This plugin works with `rehype-parse` version 3+, `rehype-stringify` version 3+,
@@ -268,8 +270,8 @@ This plugin works with `rehype-parse` version 3+, `rehype-stringify` version 3+,
 
 ## Security
 
-Use of `rehype-format` changes white space in the tree.
-White space in `<script>`, `<style>`, `<pre>`, or `<textarea>` is not modified.
+Use of `rehype-format` changes whitespace in the tree.
+Whitespace in `<script>`, `<style>`, `<pre>`, or `<textarea>` is not modified.
 If the tree is already safe, use of this plugin does not open you up for a
 [cross-site scripting (XSS)][xss] attack.
 When in doubt, use [`rehype-sanitize`][rehype-sanitize].
