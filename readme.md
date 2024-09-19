@@ -50,7 +50,9 @@ This is a rehype plugin that changes whitespace in hast.
 
 This package is useful when you want to improve the readability of HTML source
 code as it adds insignificant but pretty whitespace between elements.
-A different package, [`rehype-stringify`][rehype-stringify], controls how HTML
+The package [`hast-util-format`][hast-util-format] does the same as this plugin
+at the utility level.
+A different plugin, [`rehype-stringify`][rehype-stringify], controls how HTML
 is actually printed: which quotes to use, whether to put a `/` on `<img />`,
 etc.
 Yet another project, [`rehype-minify`][rehype-minify], does the inverse: improve
@@ -356,6 +358,8 @@ abide by its terms.
 [unified]: https://github.com/unifiedjs/unified
 
 [transformer]: https://github.com/unifiedjs/unified#transformer
+
+[hast-util-format]: https://github.com/syntax-tree/hast-util-format
 
 [rehype]: https://github.com/rehypejs/rehype
 
